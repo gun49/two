@@ -1,0 +1,597 @@
+Develop Assembly language program using 8086 microprocessor for addition of 16/32 bit numbers.
+
+
+
+	DATA SEGMENT	
+	NUM1 DW 6000H		
+	NUM2 DW 3000H		
+	SUM DW ?	
+	CARRY DB 00H	
+	DATA ENDS	
+	CODE SEGMENT	
+START:	ASSUME CS:CODE, DS:DATA	
+	MOV AX,DATA	
+	MOV DS,AX	
+	MOV AX,NUM1	
+	MOV BX,NUM2	
+	ADD AX,BX	
+	MOV SUM,AX	
+	 JNC NEXT		
+	MOV CARRY, 01H		
+NEXT:	INT 03H	
+	CODE ENDS	
+	END START	
+
+
+
+
+Develop Assembly language program using 8086 microprocessor for subtraction of 16/32 bit numbers.
+
+
+	DATA SEGMENT
+	NUM1 DW 6000H	
+	NUM2 DW 3000H	
+	DIFF  DW ?
+	BORROW DB 00H
+	DATA ENDS
+	CODE SEGMENT
+START:	ASSUME CS:CODE, DS:DATA
+	MOV AX,DATA
+	MOV DS,AX
+	MOV AX,NUM1
+	MOV BX,NUM2
+	SUB AX,BX
+	MOV DIFF,AX
+	 JNC NEXT	
+	MOV BORROW, 01H	
+NEXT:	INT 03H
+	CODE ENDS
+	END START
+
+
+
+Develop an assembly language program using 8086 microprocessor for 16 bit multiplication.
+
+	DATA SEGMENT
+	NUM1 DW 1000H	
+	NUM2 DW 0004H	
+	PROD  DW ?
+	CARRY DB 00H
+	DATA ENDS
+	CODE SEGMENT
+START:	ASSUME CS:CODE, DS:DATA
+	MOV AX,DATA
+	MOV DS,AX
+	MOV AX,NUM1
+	MOV BX,NUM2
+	MUL BX
+	MOV PROD,AX
+	 JNC NEXT	
+	MOV CARRY, 01H	
+NEXT:	INT 03H
+	CODE ENDS
+	END START
+
+
+
+
+Develop an assembly language program using 8086 microprocessor for 16 bit division.
+
+
+
+	DATA SEGMENT
+	NUM1 DW 0400H	
+	NUM2 DW 0020H	
+	QUO DW ?
+REM DW ?
+	BORROW DB 00H
+	DATA ENDS
+	CODE SEGMENT
+START:	ASSUME CS:CODE, DS:DATA
+	MOV AX,DATA
+	MOV DS,AX
+	MOV AX,NUM1
+	MOV BX,NUM2
+	DIV BX
+	MOV QUO,AX
+MOV REM,DX
+	 JNC NEXT	
+	MOV BORROW, 01H	
+NEXT:	INT 03H
+	CODE ENDS
+	END START
+
+
+
+Develop Assembly language program using 8086 microprocessor for conversion of packed BCD to unpacked BCD, 
+
+
+
+	DATA SEGMENT:
+	NUM1 DW 26H	
+	UBCD DW?	
+	DATA ENDS
+	CODE SEGMENT
+START:	ASSUME CS:CODE, DS:DATA
+	MOV AX,DATA
+	MOV DS,AX
+	MOV AL,NUM1
+	AND AL,0F0H
+	RCR AL,04H
+	MOV BH,AL
+	MOV AL,NUM1
+	AND AL,0FH
+	MOV BL,AL
+	MOV UBCD,BX
+NEXT:	INT 03H
+	CODE ENDS
+	END START
+
+
+
+Develop Assembly language program using 8086 microprocessor for conversion of unpacked BCD to packed BCD .
+
+
+
+	DATA SEGMENT:
+	NUM1 DW 0305H
+	BCD DW?	
+	DATA ENDS
+	CODE SEGMENT
+START:	ASSUME CS:CODE, DS:DATA
+	MOV AX,DATA
+	MOV DS,AX
+	MOV AX,NUM1
+	SHL AH,04H
+	ADD AH,AL
+	MOV BL,AH
+	MOV BCD,BX
+NEXT:	INT 03H
+	CODE ENDS
+	END START
+
+
+Develop Assembly language program using 8086 microprocessor for conversion of packed BCD to ASCII. 
+
+
+	DATA SEGMENT:
+	NUM1 DW 0206H	
+	ASCII DW?	
+	DATA ENDS
+	CODE SEGMENT
+START:	ASSUME CS:CODE, DS:DATA
+	MOV AX,DATA
+	MOV DS,AX
+	MOV AX,NUM1
+	AND AL,30H
+	MOV BL,AL
+	AND AH,30H
+	MOV BH,AH
+	AND AH,AL
+	MOV ASCII,BX
+NEXT:	INT 03H
+	CODE ENDS
+	END START
+		
+
+
+Develop Assembly language program using 8086 microprocessor  for finding largest number from block of 16 bit numbers
+
+
+
+
+	DATA SEGMENT
+	ARRAY DB 04H, 02H, 08H, 03H, 09H	
+	LARGEST DB ?	
+	DATA ENDS
+	CODE SEGMENT
+START:	ASSUME CS:CODE, DS:DATA
+	MOV AX,DATA
+	MOV DS,AX
+	MOV DX,0004H
+	LEA SI,ARRAY
+BACK:	MOV AL,[SI]
+UP:	INC SI
+	CMP AL,[SI]
+	JNC NEXT
+	JNZ BACK
+NEXT:	DEC DX
+	JNZ UP
+	MOV LARGEST,AL
+	INT 03H
+	CODE ENDS
+	END START
+
+
+Develop Assembly language program using 8086 microprocessor  for finding smallest number from block of 16 bit numbers
+
+
+	DATA SEGMENT
+	ARRAY DB 09H ,04H ,03H ,02H, 05H	
+	SMALLEST DB ?	
+	DATA ENDS
+	CODE SEGMENT
+START:	ASSUME CS:CODE, DS:DATA
+	MOV AX,DATA
+	MOV DS,AX
+	MOV DX,0004H
+	LEA SI,ARRAY
+BACK:	MOV AL,[SI]
+	INC SI
+	CMP AL,[SI]
+	JC NEXT
+	JNZ BACK
+NEXT:	DEC DX
+	MOV SMALLEST,AL
+	INT 03H
+	CODE ENDS
+	END START
+
+
+
+
+Develop Assembly language program using 8086 microprocessor for arranging N – 16 bit number data block in ascending order.
+
+
+	DATA SEGMENT
+	ARRAY DB 25H ,15H ,10H ,12H, 03H, 01H
+	COUNT DW 0006H
+	DATA ENDS
+	CODE SEGMENT
+START:	ASSUME CS:CODE, DS:DATA
+	MOV AX,DATA
+	MOV DS,AX
+	MOV DX,COUNT
+UP:	MOV CX,DX
+	LEA SI,ARRAY
+NEXT:	DEC CX
+	JZ NEXTB
+	INC SI
+	MOV AL,[SI]
+	CMP AL,[SI-1]
+	JNC NEXT
+	XCHG AL,[SI-1]
+	MOV [SI],AL
+	JNZ NEXT
+NEXTB:	DEC DX
+	JNZ UP
+	INT 03H
+	CODE ENDS 
+	END START
+
+
+Develop Assembly language program using 8086 microprocessor for arranging N – 16 bit number data block in descending order.
+
+
+
+	DATA SEGMENT
+	ARRAY DB 25H ,15H ,10H ,12H, 03H, 01H
+	COUNT DW 0006H
+	DATA ENDS
+	CODE SEGMENT
+START:	ASSUME CS:CODE, DS:DATA
+	MOV AX,DATA
+	MOV DS,AX
+	MOV DX,COUNT
+UP:	MOV CX,DX
+	LEA SI,ARRAY
+NEXT:	DEC CX
+	JZ NEXTB
+	INC SI
+	MOV AL,[SI]
+	CMP AL,[SI-1]
+	JC NEXT
+	XCHG AL,[SI-1]
+	MOV [SI],AL
+	JNZ NEXT
+NEXTB:	DEC DX
+	JNZ UP
+	INT 03H
+	CODE ENDS 
+	END START
+
+
+
+Develop Assembly language program using 8086 microprocessor for block copy.
+
+
+
+	DATA SEGMENT
+	 ARRAY1 DB 01H,02H,05H,03H,08H
+	 count DW 0005H
+	 DATA ENDS
+	EXTRA SEGMENT
+	 ARRAY2 DB ?
+START:	 EXTRA ENDS
+	CODE SEGMENT
+	 START:
+	 ASSUME DS:DATA,CS:CODE,ES:EXTRA
+UP:	 MOV AX,DATA
+	 MOV DS,AX
+NEXT:	 MOV AX,EXTRA
+	 MOV ES,AX
+	 MOV CX,COUNT
+	 LEA SI,ARRAY1
+	 LEA DI,ARRAY2
+	 CLD
+	 REP MOVSB
+	
+	 MOV AH,4CH
+NEXTB:	 INT 21H
+	 CODE ENDS
+	END START
+
+
+
+Develop Assembly language program using 8086 microprocessor block exchange.
+
+
+	DATA SEGMENT
+	 ARRAY1 DB 01H,02H,05H,03H,08H
+	 count DW 0005H
+	 DATA ENDS
+	EXTRA SEGMENT
+	 ARRAY2 DB ?
+START:	 EXTRA ENDS
+	CODE SEGMENT
+	 START:
+	 ASSUME DS:DATA,CS:CODE,ES:EXTRA
+UP:	 MOV AX,DATA
+	 MOV DS,AX
+NEXT:	 MOV AX,EXTRA
+	 MOV ES,AX
+	 MOV CX,COUNT
+	 LEA SI,ARRAY1
+	 LEA DI,ARRAY2
+	 AGAIN :MOV AL,DS:[SI]
+	 MOV ES:[DI],AL
+	 INC SI
+	 INC DI
+NEXTB:	 LOOP AGAIN
+	 MOV AH,4CH
+	 INT 21H
+	 CODE ENDS
+	END START
+
+
+
+
+
+Develop Assembly language program using 8086 microprocessor block exchange without string instruction
+
+
+
+DATA SEGMENT:
+	 ARRAY1 DB 01H,02H,05H,03H,08H
+	 count DW 0005H
+	 DATA ENDS
+	EXTRA SEGMENT
+	 ARRAY2 DB 10H,11H,12H,13H,14H
+START:	 EXTRA ENDS
+	CODE SEGMENT
+	 START:
+	 ASSUME DS:DATA,CS:CODE,ES:EXTRA
+UP:	 MOV AX,DATA
+	 MOV DS,AX
+NEXT:	 MOV AX,EXTRA
+	 MOV ES,AX
+	 MOV CX,COUNT
+	 LEA SI,ARRAY1
+	 LEA DI,ARRAY2
+	 AGAIN :MOV AL,DS:[SI]
+	 XCHG ES:[DI],AL
+	 MOV DS:[SI],AL
+	 INC SI
+NEXTB:	 INC DI
+	 LOOP AGAIN
+	 MOV AH,4CH
+	 INT 21H
+	 CODE ENDS
+
+
+
+Develop Assembly language program using 8086 microprocessor to implement int N
+
+
+
+
+Data segment
+num1 db ?
+num2 db ?
+Result db ?
+msg1 db 10,13,"Enter first number to add: $"
+msg2 db 10,13,"enter second number to add: $"
+msg3 db 10,13,"Result of the addition is: $"
+ends
+code segment
+assume ds:data, cs:code
+start:
+mov ax,data
+mov ds,ax
+lea dx,msg1
+mov ah,9
+int 21h
+
+mov ah,1
+int 21h
+mov num1,al
+
+lea dx,msg2
+mov ah,9
+int 21h
+
+mov ah,1 
+int 21h
+mov num2,al
+add al,num1
+mov result,al
+mov ah,0
+aaa
+add ah,30H
+add al,30h
+
+mov bx,ax
+lea dx,msg3
+mov ah,9
+int 21h
+mov ah,2
+mov dl,bh
+int 21h
+mov ah,2
+mov dl,bl
+int 21h
+mov ah,4ch
+int 21h
+code ends 
+end start
+
+
+
+Develop Assembly language program using 8086 microprocessor for checking whether a string is palindrome or not.
+
+
+
+	data segment
+	str1 db 5 dup(00)
+	msgs db "$ enter 5 character string $"
+	msg1 db "$ given string is palindrome $"
+	msg2 db "$ given string is not palindrome $"
+	data ends
+	code segment
+start:	Assume cs:code,ds:data ,es:data
+	      mov ax,data
+	      mov ds,ax
+	      mov es,ax
+	      lea si,str1
+	      mov cx,0005h
+	      mov ah,09h
+	      lea dx,msgs
+	      int 21h
+next:	      mov ah,02h                                
+	      int 21h
+	      mov [si],al
+	      inc si
+	      dec cx
+	      jnz next
+	      dec si
+	      mov di,si
+	      lea si,str1
+	      mov cx,0002h
+	      cld
+next1:	      cmpsb
+	      jne exit
+	      dec di
+	      dec di
+	      loop next1
+	      mov ah,09h
+	      lea dx,msg1
+	      int 21h
+	      jmp last
+exit:	      mov ah,09h
+	      lea dx,msg2
+	      int 21h
+last:	      mov ax,4c00h
+	      int 21h
+	      code ends
+	      end start
+
+
+
+Implement CPUID instruction.
+
+
+
+	.model small
+	.586p
+	.data
+	MAN DB
+	‘MANUFACTURER: $’
+	A1 DD?
+	A2 DD?
+	A3 DD?
+	.code
+	.startup
+	MOV AX,00H
+	cpuid
+	MOV A1,EBX
+	MOV A2,EDX 
+	MOV A3,ECX
+	 MOV DX,OFFSET MAN    
+	MOV AH,09H
+	INT 21H
+	MOV AH,40H
+	MOV BX,01H
+	MOV CX,0CH    
+	MOV DX,OFFSET A1
+	INT 21H
+	.exit
+	END
+
+
+Develop Assembly language program using 8086 microprocessor to implement SIDT
+
+
+.model small
+.386p
+.data
+sidtr_data db 6 dup(?)
+base db 'base=$'
+limit db 0dh,0ah,'Limit=$'
+.stack 1024
+.code
+.startup
+lea bx,sidtr_data
+sidt[bx]
+lea dx,base
+mov ah,09h
+int 21h
+
+add bx,05h
+mov cx,06h
+
+back: cmp cx,02h
+jnz skip1
+lea dx,limit
+mov ah,09h
+int 21h
+
+skip1: call con
+dec bx
+loop back
+.exit
+
+con proc near
+mov ax,[bx]
+mov ax,0f0h
+shr ax,4
+cmp ax,09h
+ja hexdigit
+
+or ax,30h
+jmp skip
+
+hexdigit: add ax,37h
+
+skip: mov dx,ax
+mov ah,02h
+int 21h
+
+mov ax,[bx]
+and ax,00fh
+
+cmp ax,09h
+ja hexdigit2
+
+or ax,30h
+jmp skip2
+
+hexdigit2: add ax,37h
+skip2: mov dx,ax
+mov ah,02h
+int 21h
+ret
+con endp
+end
+mov ah,4ch
+mov al,00h
+int 21h
