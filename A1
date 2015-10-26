@@ -1165,4 +1165,69 @@ class Linked
 
 	}	
 }
+---------------------------------------- --------------------------------------------
+import java.util.*;
+
+class Bankers
+{
+	static boolean check(int i,int r,int avail[],int need[][])
+	{
+		for(int j=0;j<r;j++)
+			if(avail[j] < need[i][j])
+				return false;
+		return true;	
+
+	}
+	
+	public static void main(String args[])
+	{
+		Scanner t = new Scanner(System.in);
+		int i,j,k,p,r;
+		
+		System.out.println("Enter no of processes");
+		p = t.nextInt();
+		System.out.println("Enter no of resources");
+		r = t.nextInt();
+		int max[][] = new int[p][r];
+		int all[][] = new int[p][r];//allocated
+		int need[][] = new int[p][r];
+		int avail[] = new int[r];
+		System.out.println("Enter the max alloc matrix");
+		for(i=0;i<p;i++)
+			for(j=0;j<r;j++)
+				max[i][j] = t.nextInt();
+		System.out.println("Enter the alloc matrix");
+		for(i=0;i<p;i++)
+			for(j=0;j<r;j++)
+				all[i][j] = t.nextInt();
+		//calculating need matrix
+		System.out.println("Enter available matrix");
+		for(j=0;j<r;j++)
+			avail[j] = t.nextInt();
+		for(i=0;i<p;i++)
+			for(j=0;j<r;j++)
+				need[i][j] = max[i][j] - all[i][j];
+		j=0;
+		boolean done[] = new boolean[p];
+		while(j<p)
+		{
+			boolean allocated = false;
+			for(i=0;i<p;i++)
+				if(!done[i] && check(i,r,avail,need))
+					{
+						for(k=0;k<r;k++)
+							avail[k] = avail[k] - need[i][k] + max[i][k];
+						System.out.println("Allocated process "+ i);
+						allocated = done[i] = true;
+						j++;
+					}
+				if(allocated == false)
+					break;				
+		}
+		if (j==p)
+			System.out.println("All processes allocated");
+		else System.out.println("Cannot allocate safely");		
+				
+	}
+}
 
