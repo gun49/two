@@ -1,0 +1,1102 @@
+1.//fcfs
+import java.util.*;
+
+public class Fcfs {
+	
+	static  Scanner sc = new Scanner(System.in);
+	 
+    public static void main(String args[])
+    {
+        float t1=0,t2=0;
+       
+        System.out.println("Enter no of process");
+        int n = sc.nextInt();
+        int bt[] = new int[n];
+        for (int i=0; i<n; i++)
+        {
+            System.out.println("Enter Burst Time for Process "+(i+1));
+            bt[i] = sc.nextInt();
+        }
+        
+        int wt[]=new int[n];
+        wt[0]=0;
+        for(int i=1;i<n;i++)
+        {
+        wt[i]=bt[i-1]+wt[i-1];
+        t1+=wt[i];
+        }
+        int tat[]=new int[n];
+        for(int i=0;i<n;i++)
+        {
+        tat[i]=bt[i]+wt[i];
+        t2+=tat[i];
+        }
+        System.out.println("Process\tBurst time\tWaiting time\tTurn Around time");
+        for(int i=0;i<n;i++)
+        {
+        System.out.println("P"+(i+1)+"\t\t"+bt[i]+"\t\t"+wt[i]+"\t\t"+tat[i]);
+        }
+        System.out.println("Average Waiting time="+t1/n);
+        System.out.println("Average Turn Around time="+t2/n);
+    }
+    
+    
+}
+2. SJF
+import java.util.*;
+
+public class Sjf {
+	
+	static  Scanner sc = new Scanner(System.in);
+    
+	public static void main(String[] args) {
+        // TODO Auto-generated method stub
+        int n,i,j,ptr,t,t2;
+        int pno[] = new int[10];
+        int bt[] = new int[10];
+        int wt[] = new int[10];
+        int tt[] = new int[10];
+        int tempwt[] = new int[10];
+        int tempno[] = new int[12]; //stores process no temporary
+        int temp[] = new int[12];   //represent Gantt chart
+        float awt,atat,twt=0,ttat=0;
+        System.out.println("Enter no of process");
+        n = sc.nextInt();
+        for (i=0; i<n; i++)
+        {
+            System.out.println("Enter the burst time of process "+(i+1));
+            bt[i]=sc.nextInt();
+            temp[i]=bt[i];
+            pno[i]=i+1;
+            tempno[i]=pno[i];
+        }
+        
+        for(i=0;i<n;i++)
+        {
+            ptr=0;
+            while(ptr<=n-i)
+            {
+                if(temp[ptr]>temp[ptr+1])
+                {
+                    t = temp[ptr];
+                    temp[ptr] = temp[ptr+1];
+                    temp[ptr+1] = t;
+                    t2 = tempno[ptr];
+                    tempno[ptr] = tempno[ptr+1];
+                    tempno[ptr+1] = t2;
+                }
+                ptr++;
+            }
+        }
+        
+        for(i=0;i<n;i++)
+        {
+            temp[i] = temp[i+2];
+            tempno[i] = tempno[i+2];
+        }
+        tempwt[0] = 0;
+        for(i=1;i<n;i++)
+            tempwt[i] = tempwt[i-1]+temp[i-1];
+        
+        for(i=0;i<n;i++)
+        {
+            j=0;
+            while(tempno[i]!=pno[j]&&j<n)
+                j++;
+            wt[j] = tempwt[i];
+        }
+        
+        for(i=0;i<n;i++)
+            tt[i]=wt[i]+bt[i];
+        
+        for(i=0;i<n;i++)
+        {
+            twt = twt+wt[i];
+            ttat = ttat+tt[i];
+        }
+        
+        awt = twt/n;
+        atat = ttat/n;
+        System.out.println("Process\tBurst Time\tWaiting Time\tTurnaround Time");
+        
+        for(i=0;i<n;i++)
+        {
+            System.out.print("P"+pno[i]+"\t"+bt[i]+"\t\t"+wt[i]+"\t\t"+tt[i]);
+            System.out.println();
+        }
+        System.out.println("Average Waiting Time = "+awt);
+        System.out.println("Average Turnaround Time = "+atat);
+        
+    }
+}
+
+
+==--------------------------------------------------------------------------------3 priority
+import java.util.*;
+
+class Priority
+{
+	static Scanner t = new Scanner(System.in);
+
+	static void priority(int a[][],int p[][],int n)
+	{
+		int wt[] = new int[30];
+		int tat[] = new int[30];
+		for(int i=0;i<n-1;i++)
+			for(int j=0;j<n-1-i;j++)
+				if(p[j][1]>p[j+1][1])
+				{
+					int t = p[j][1];
+					p[j][1] = p[j+1][1];
+					p[j+1][1] = t;
+					t = p[j][0];
+					p[j][0] = p[j+1][0];
+					p[j+1][0] = t;
+				}
+		wt[p[0][0]] = 0;	tat[p[0][0]] = a[p[0][0]][1];
+		for(int i=1;i<n;i++)
+		{
+			wt[p[i][0]] = wt[p[i-1][0]] + a[p[i-1][0]][1];
+			tat[p[i][0]] = tat[p[i-1][0]] + a[p[i][0]][1];
+		}
+		System.out.println("****************************\nPROCESS\tBT\tWT\tTAT");
+		for(int i=0;i<n;i++)
+			System.out.println((a[i][0]+1)+"\t"+a[i][1]+"\t"+wt[i]+"\t"+tat[i]);
+	}
+
+	public static void main(String args[])
+	{
+		System.out.print("Enter the number of processes : ");
+		int n = t.nextInt();
+		int a[][] = new int[30][30];
+		int p[][] = new int[30][30];
+		for(int i=0;i<n;i++)
+		{
+			System.out.print("Enter the burst time and priority for process "+(i+1)+" : ");
+			a[i][1] = t.nextInt();
+			p[i][1] = t.nextInt();
+			a[i][0] = p[i][0] = i;
+		}
+
+		priority(a,p,n);
+	}
+}
+
+---------------------------------------------------------------------------
+4th round robin
+import java.util.*;
+
+class RoundRobin
+{
+	static Scanner t = new Scanner(System.in);
+
+	static void roundRobin(int a[][],int n,int tq,int b[][],int temp)
+	{
+		int k=0;
+		b[0][1] = 0;
+		for(int i=0;;i=(i+1)%n)
+		{
+
+			if(a[i][1]>=tq)
+			{
+				a[i][1] -= tq;	if(k!=0){b[k][1] = b[k-1][1] + tq;} else b[k][1] = tq;	b[k][0] = a[i][0];	k++; 
+			}
+			else if(a[i][1] > 0)
+			{
+				if(k!=0){b[k][1] = b[k-1][1] + a[i][1];} else b[k][1] = a[i][1];	b[k][0] = a[i][0];	k++;	a[i][1] = 0;	
+			}
+			if(k==((temp/tq)+1))	break;
+		}
+	}
+
+	static void getTatWt(int tat[],int wt[],int b[][],int temp,int n,int tq)
+	{
+		int count[] = new int[n];
+		for(int i=0;i<n;i++)	{tat[i] = 0; wt[i] = 0; count[i] = 0;}
+		for(int i=temp-1;i>=0;i--)
+		{
+			count[b[i][0]-1]++;
+			if(tat[b[i][0]-1]==0)
+			{
+				tat[b[i][0]-1] = b[i][1];
+			}
+		}
+		for(int i=temp-1;i>0;i--)
+		{
+			if(wt[b[i][0]-1]==0)
+				wt[b[i][0]-1] = b[i-1][1] - ((count[b[i][0]-1]-1))*tq;
+		}
+	}
+
+	public static void main(String args[])
+	{
+		System.out.print("Enter the number of processes : ");
+		int n = t.nextInt();
+		int a[][] = new int[30][30];
+		for(int i=0;i<n;i++)
+		{
+			System.out.print("Enter the burst time for process "+(i+1)+" : ");
+			a[i][1] = t.nextInt();
+			a[i][0] = (i+1);
+		}
+		System.out.print("Enter a time quantum : ");
+		int tq = t.nextInt();
+
+		int temp = 0;
+		for(int i=0;i<n;i++)
+			temp = temp + a[i][1];
+		int b[][] = new int[(temp/tq)+1][(temp/tq)+1];
+
+		roundRobin(a,n,tq,b,temp);
+
+		System.out.println("\n**********************\nPROCESS\tTAT\tWT");
+		int t = (temp%tq)==0?(temp/tq):(temp/tq+1);
+		int wt[] = new int[n];
+		int tat[] = new int[n];
+		float awt,atat;
+		getTatWt(tat,wt,b,t,n,tq);
+		for(int i=0;i<n;i++)
+			System.out.println(a[i][0]+"\t"+tat[i]+"\t"+wt[i]);
+		atat = 0; awt = 0;
+		for(int i=0;i<n;i++)
+		{
+			awt = awt + wt[i];	atat = atat + tat[i];
+		}
+		System.out.println("\nATAT = "+(atat/n)+"\nAWT = "+(awt/n)+"\n**********************");
+	}
+}
+
+------------------------------------------------------------------------
+
+5 producer consumer
+import java.util.concurrent.Semaphore;
+
+class Queue {
+  int value;
+
+  static Semaphore semCon = new Semaphore(0);
+
+  static Semaphore semProd = new Semaphore(1);
+
+  void get() {
+    try {
+      semCon.acquire();
+    } catch (InterruptedException e) {
+      System.out.println("InterruptedException caught");
+    }
+    System.out.println("Got: " + value);
+    semProd.release();
+  }
+
+  void put(int n) {
+    try {
+      semProd.acquire();
+    } catch (InterruptedException e) {
+      System.out.println("InterruptedException caught");
+    }
+
+    this.value = n;
+    System.out.println("Put: " + n);
+    semCon.release();
+  }
+}
+
+class Producer implements Runnable {
+  Queue q;
+
+  Producer(Queue q) {
+    this.q = q;
+    new Thread(this, "Producer").start();
+  }
+
+  public void run() {
+    for (int i = 0; i < 20; i++)
+      q.put(i);
+  }
+}
+
+class Consumer implements Runnable {
+  Queue q;
+
+  Consumer(Queue q) {
+    this.q = q;
+    new Thread(this, "Consumer").start();
+  }
+
+  public void run() {
+    for (int i = 0; i < 20; i++)
+      q.get();
+  }
+}
+
+public class ProdCon {
+  public static void main(String args[]) {
+    Queue q = new Queue();
+    new Consumer(q);
+    new Producer(q);
+  }
+}
+
+	6th bankers algo
+mport java.util.Scanner;
+
+public class Bankers {
+	
+    private int need[][],allocate[][],max[][],avail[][],np,nr;
+
+    private void input() {
+    	Scanner sc=new Scanner(System.in);
+    	System.out.print("Enter no. of processes and resources : ");
+    	np = sc.nextInt();  //no. of process
+    	nr = sc.nextInt();  //no. of resources
+    	need = new int[np][nr];  //initializing arrays
+    	max = new int[np][nr];
+    	allocate = new int[np][nr];
+    	avail = new int[1][nr];
+
+    	System.out.println("Enter allocation matrix -->");
+    	for(int i=0; i<np; i++)
+    		for(int j=0; j<nr; j++)
+    			allocate[i][j] = sc.nextInt();  //allocation matrix
+
+    	System.out.println("Enter max matrix -->");
+    	for(int i=0; i<np; i++)
+    		for(int j=0; j<nr; j++)
+    			max[i][j] = sc.nextInt();  //max matrix
+
+    	System.out.println("Enter available matrix -->");
+        	for(int j=0; j<nr; j++)
+        		avail[0][j] = sc.nextInt();  //available matrix
+
+        	sc.close();
+    }
+
+    private int[][] calc_need() {
+    	for(int i=0; i<np; i++)
+    		for(int j=0; j<nr; j++)  //calculating need matrix
+    			need[i][j] = max[i][j]-allocate[i][j];
+    	return need;
+    }
+
+    private boolean check(int i) { 
+    	for(int j=0;j<nr;j++)
+    		if(avail[0][j]<need[i][j])
+    			return false;
+	return true;
+	}
+
+    public void isSafe() { 
+    	input();
+    	calc_need();
+    	boolean done[]=new boolean[np];
+    	int j=0;   
+    	while(j<np) {  //until all process allocated boolean allocated=false;
+    		boolean allocated = false;
+			for(int i=0; i<np; i++)
+    			if(!done[i] && check(i)) {  //trying to allocate
+    				for(int k=0; k<nr; k++)
+    					avail[0][k] = avail[0][k]-need[i][k]+max[i][k];
+    				System.out.println("Allocated process : "+i);
+    				allocated = done[i]=true;
+    				j++;
+    			}
+    		if(!allocated) break;  //if no allocation
+    	}
+    	if(j==np)  //if all processes are allocated
+    		 System.out.println("\nSafely allocated");
+    	else System.out.println("All proceesscant be allocated safely");
+    }
+
+    public static void main(String[] args) {
+    	new Bankers().isSafe();
+    }
+}
+
+
+------------------- --------------------------- ---------------------------- ----------------------------- ----------------------
+Bankers
+import java.util.Scanner;
+
+public class Bankers { 
+
+    private int need[][],allocate[][],max[][],avail[][],np,nr;
+
+    private void input() {
+
+    Scanner sc=new Scanner(System.in);
+
+    System.out.print("Enter no. of processes and resources : ");
+
+    np = sc.nextInt();  //no. of process
+
+    nr = sc.nextInt();  //no. of resources
+
+    need = new int[np][nr];  //initializing arrays
+
+    max = new int[np][nr];
+
+    allocate = new int[np][nr];
+
+    avail = new int[1][nr];
+
+    System.out.println("Enter allocation matrix -->");
+
+    for(int i=0; i<np; i++)
+
+    for(int j=0; j<nr; j++)
+
+    allocate[i][j] = sc.nextInt();  //allocation matrix
+
+    System.out.println("Enter max matrix -->");
+
+    for(int i=0; i<np; i++)
+
+    for(int j=0; j<nr; j++)
+
+    max[i][j] = sc.nextInt();  //max matrix
+
+    System.out.println("Enter available matrix -->");
+
+        for(int j=0; j<nr; j++)
+
+        avail[0][j] = sc.nextInt();  //available matrix
+
+        sc.close();
+    }
+    private int[][] calc_need() {
+    for(int i=0; i<np; i++)
+    for(int j=0; j<nr; j++)  //calculating need matrix
+    need[i][j] = max[i][j]-allocate[i][j];
+    return need;
+    }
+
+    private boolean check(int i) { 
+
+    for(int j=0;j<nr;j++)
+
+    if(avail[0][j]<need[i][j])
+    return false; 
+	return true;	}
+    public void isSafe() { 
+    input();
+    calc_need(); 
+    boolean done[]=new boolean[np];
+    int j=0,i=0;   
+    while(j<np) {  //until all process allocated boolean allocated=false;
+    boolean allocated = false; 
+    if(!done[i] && check(i)) {  //trying to allocate
+    for(int k=0; k<nr; k++)
+    avail[0][k] = avail[0][k]-
+need[i][k]+max[i][k];
+    System.out.println("Allocated process : "+i);
+    allocated = done[i]=true;
+    j++;
+    }
+    if(!allocated) break;  //if no allocation
+    }
+    if(j==np)  //if all processes are allocated
+     System.out.println("\nSafely allocated");
+   else System.out.println("All proceesscant be allocated safely");
+    }
+    public static void main(String[] args) {
+    new Bankers().isSafe();
+    }
+}
+----------------------- ------------------------ ------------------------------ ---------------------------- -----------------
+7th fifo replacement
+import java.io.*;
+
+public class Fifo 
+{
+    public static void main(String[] args) throws Exception
+    {
+        int f,p,num=0, pageHit=0;
+        int pages[];
+        int frame[];
+        boolean flag = true;
+       
+        BufferedReader br= new BufferedReader(new InputStreamReader(System.in));
+        System.out.println("Enter number of frames : ");
+        f = Integer.parseInt(br.readLine());
+        System.out.println("Enter number of pages : ");
+        p = Integer.parseInt(br.readLine());
+       
+        frame = new int[f];
+        pages = new int[p];
+       
+        for(int i=0; i<f; i++)
+        {
+            frame[i] = -1;
+        }
+       
+        System.out.println("Enter page number : ");
+        for(int i=0;i<p;i++)
+            pages[i] = Integer.parseInt(br.readLine());
+       
+        for(int i=0; i<p; i++)
+        {
+            flag = true;
+            int page = pages[i];
+            for(int j=0; j<f; j++)
+            {
+                if(frame[j] == page)
+                {
+                    flag = false;
+                    pageHit++;
+                    break;
+                }
+            }
+            if(num == f)
+                num = 0;
+           
+            if(flag)
+            {
+                frame[num] = page;
+                num++;
+            }
+            System.out.print("frame : ");
+            for(int k=0; k<f; k++)
+                System.out.print(frame[k]+" ");
+            System.out.println();
+           
+        }
+        System.out.println("No. of page hit : "+pageHit);
+    }
+}
+
+----------- ------------ -------------------- ------------------------------- -----------------------------------------------------------------
+8th lru 
+import java.io.*;
+
+public class Lru 
+{
+    public static void main(String[] args) throws Exception
+    {
+        int f, p, num=0, pageHit=0, count=0, ptPage=0, pg=0;
+        int pages[];
+        int frame[];
+        int recent[];
+        boolean flag = true;
+        boolean flag2 = true;
+        
+        BufferedReader br= new BufferedReader(new InputStreamReader(System.in));      //STEP 1
+        System.out.println("Enter number of frames : ");
+        f = Integer.parseInt(br.readLine());
+        System.out.println("Enter number of pages : ");
+        p = Integer.parseInt(br.readLine());
+        
+        frame = new int[f];
+        pages = new int[p];
+        recent = new int[f];
+        
+        for(int i=0; i<f; i++)                                      //STEP 2
+        {
+            frame[i] = -1;
+            recent[i] = -1;
+        }
+        
+        System.out.println("Enter page number : ");
+        for(int i=0;i<p;i++)
+            pages[i] = Integer.parseInt(br.readLine());
+        
+        for(int i=0; i<p; i++)
+        {    
+            flag = true;
+            int page = pages[i];
+            
+            for(int j=0; j<f; j++)
+                recent[j] = -1;
+                
+            for(int j=0; j<f; j++)        //check for page hit      STEP 3
+            {
+                if(frame[j] == page)
+                {
+                    flag = false;
+                    pageHit++;
+                    break;
+                }
+            }
+            if(flag)
+            {
+                count = 0;
+                if(i>=3)
+                {    
+                    ptPage = i-1;
+                    
+                    while(count < f)                                      //STEP 4
+                    {    
+                        Thread.sleep(1000);
+                        pg = pages[ptPage];
+                        flag2 = true;
+                        //for(int j=0; j<f; j++)
+                        //        System.out.print(recent[j]+" ");
+                        //System.out.println();
+                        for(int j=0; j<f; j++)
+                        {
+                            if(pg == recent[j])
+                            {    
+                                flag2 = false;
+                                //System.out.println(pg+" "+recent[j]+" "+flag2+" "+i+" "+j+" "+f+" "+ptPage);
+                                break;
+                            }
+                            //break;
+                        }
+                        if(flag2)
+                        {
+                            //System.out.println(pg+" "+recent[j]+" "+flag2+" "+i+" "+j+" "+f+" "+ptPage);
+                            recent[count] = pg;
+                            count++;
+                            ptPage--;
+                        }
+                        else
+                            ptPage--;
+                    }
+                
+                /*    System.out.print("page : "+page+" recent : ");
+                    for(int j=0; j<f; j++)
+                        System.out.print(recent[j]+" ");
+                    System.out.println();
+                */    
+                
+                    int replace = recent.length - 1;                     //STEP 5
+                    int pg_to_replace = recent[replace];
+                    int k=0;
+                    while(frame[k] != pg_to_replace)                 //STEP 6
+                        k++;
+                    
+                    frame[k] = page;
+                }
+                else
+                    frame[i] = page;
+            }
+            System.out.print("frame : ");                          //STEP 7
+            for(int k=0; k<f; k++)
+                System.out.print(frame[k]+" ");
+            System.out.println();
+        }
+        System.out.println("No. of page hit : "+pageHit);
+    }
+}
+
+------------ ------------------ ---------------------------- ------------------------------ -------------------------------------- ------------
+9th opt
+import java.util.*;
+public class Opt 
+{
+	static int n, page[], f, frames[], faults, count;
+    
+	static double rate;
+	
+	static Scanner input= new Scanner(System.in);
+    
+	
+	static void optimal() {
+        System.out.println("Enter number of pages");
+        n=input.nextInt();
+        page=new int[n];
+        System.out.println("Enter number of page frames");
+        f=input.nextInt();
+        frames=new int[f];
+        count=1;
+        int i;
+        System.out.println("Enter the pages");
+        for(i=0;i<n;i++)
+        	page[i]=input.nextInt();
+        
+        for(i=0;i<f;i++)
+        	frames[i]=-1;
+        
+        call_opt();
+    }
+    
+	public static void display() {
+    int i;
+    System.out.print("Page frame "+count+" :");
+    for(i=0;i<f;i++)
+    {
+    if(frames[i]==-1)  
+    System.out.print(" -");
+    else
+    System.out.print(" "+frames[i]);
+    }
+    System.out.print("\n");
+    count++;
+    }
+	
+	public static void reset() {
+        int j;
+        for(j=0;j<f;j++)
+        frames[j]=0;
+        faults=0;
+        count=1;
+	}
+    
+	public static void call_opt() {
+	    int i,j=0,k,duration[],max,flag[];
+	    reset();
+	    duration=new int[f];
+	    flag=new int[f];
+	    boolean found=false;
+	    for (i=0;i<n;i++)
+	    {
+	    	for (j=0;j<f;j++)
+	    	{
+	    		flag[j]=0;
+	    		duration[j]=n;
+	    	}
+	    	
+	    	for (k=i+1;k<n;k++)
+	    	{
+	    		for (j=0;j<f;j++)
+	    			if (page[k]==frames[j]&&flag[j]==0)
+	    			{
+	    				duration[j]=k;
+	    				flag[j]=1;
+	    			}
+	    	}
+
+	    for(j=0;j<f;j++)
+	    	if(page[i]==frames[j])
+	    		found=true;
+	    
+	    if(found==false)
+	    {
+	    	max=0;
+	    	for(j=0;j<f;j++)
+	    	{
+	    		if(duration[j]>duration[max])
+	    			max=j;
+	    		if(frames[j]<0)
+	    		{
+	    			max=j;
+	    			break;
+	    		}
+	    	}
+	    	frames[max]=page[i];
+	    	faults++;
+	    }
+
+	    display();
+	    found=false;
+	    }
+	    System.out.println("Number of page faults = "+faults);	
+	}
+	
+    public static void main(String args[]) {
+    	optimal();
+	}
+}
+
+
+10th placement algo
+#include<stdio.h>
+typedefstruct
+{
+	int size, allot;
+}mem;
+void main ( )
+{
+	mem m[ 10 ];
+	inti=0, j, k, pro[ 20 ], n, min,max, proallot[ 20 ][ 3 ], diff;
+	printf ( "Enter number of processes\n" );
+	scanf ( "%d", &n );
+		m[ i ].size = m[ i + 1 ].size = 1;
+		m[ i + 2 ].size = m[ i + 3 ].size = 2;
+		m[ i + 4 ].size = m[ i + 5 ].size = 4;
+		m[ i + 6 ].size = m[ i + 7 ].size = 8;
+		m[ i + 8 ].size = m[ i + 9 ].size = 16;
+
+	for ( i = 0; i < 10; i++ )
+		m[ i ].allot = 0;
+	printf ( "Enter the size of all the processes\n" );
+	for ( i = 0; i < n; i++ )
+	{
+		printf ( "Enter the size of process %d\n", i );
+		scanf ( "%d", &pro[ i ] );
+	}
+	//best fit 0
+
+	for ( i = 0; i < n; i++ )
+	{
+		min = 10000;
+		for ( j = 0; j < 10; j++ )
+		{
+			diff = m[ j ].size - pro[ i ];
+			if ( diff >= 0 && diff < min && m[ j ].allot != 1 )
+			{
+				min = diff;
+				proallot[ i ][ 0 ] = j;
+			}
+		}
+		if ( proallot[ i ][ 0 ] >= 0 &&proallot[ i ][ 0 ] <= 9 )           // just in case some processes go unallocated
+		{
+			m[ proallot[ i ][ 0 ] ].allot = 1;
+		}
+		else m[ proallot[ i ][ 0 ] ].allot = -999;
+	}
+
+	for ( i = 0; i < 10; i++ )
+		m[ i ].allot = 0;
+	for ( i = 0; i < n; i++ )
+	{
+		max = -10000;
+		for ( j = 0; j < 10; j++ )
+		{
+
+			diff = m[ j ].size - pro[ i ];
+			if ( diff >= 0 && diff > max && m[ j ].allot != 1 )
+			{
+				max = diff;
+				proallot[ i ][ 1 ] = j;
+			}
+
+		}
+		if (proallot[i][1] >=0 &&proallot[i][1] <=9 )           // just in case some processes go unallocated
+		{
+			m[ proallot[ i ][ 1 ] ].allot = 1;
+		}
+		else proallot[ i ][ 1 ] = -999;
+	}
+
+	for ( i = 0; i < 10; i++ )
+		m[ i ].allot = 0;
+	//first fit
+	for ( i = 0; i < n; i++ )
+	{
+		for ( j = 0; j < 10; j++ )
+		{
+			if ( m[ j ].allot != 1 && m[ j ].size >= pro[ i ] )
+			{
+				proallot[ i ][ 2 ] = j;										// allot the first one and break
+				break;
+			}
+		}
+		if ( proallot[ i ][ 2 ] >= 0 &&proallot[ i ][ 2 ] <= 9 )           // just in case some processes go unallocated
+		{
+			m[ proallot[ i ][ 2 ] ].allot = 1;
+		}
+		else proallot[ i ][ 2 ] = -999;
+	}
+	printf ( "Job no. Best fit Worst fit  First fit\n" );
+	for ( i = 0; i < n; i++ )
+		printf ( "%8d%9d%9d%10d\n", i, proallot[ i ][ 0 ], proallot[ i ][ 1 ], proallot[ i ][ 2 ] );
+}
+
+---------------------------------------------------------------------------- ---------------- ---------------------------------
+11th paging
+
+#include <stdio.h>
+#include <stdlib.h>
+int main()
+ {
+inttotal_memory=0,frame_size=0,frame_occupied,fmax;
+intpage_table[100];
+inti,vm,pm;
+    char ans='y';
+printf("Enter size of physical memory:");
+scanf("%d",&total_memory);
+printf("Enter the size of frame");
+scanf("%d",&frame_size);
+printf("enter the no.of frames occupied");
+scanf("%d",&frame_occupied);
+fmax=total_memory/frame_size;
+    if(frame_occupied>fmax)
+    {
+printf("memory thrash");
+        return;
+    }
+printf("Enter the frames used by pages(less than %d):",fmax);
+    for(i=0;i<frame_occupied;i++)
+    {
+scanf("%d",&page_table[i]);
+    }
+printf("Virtual memory locations available are 0 to %d\n",frame_size*frame_occupied);
+    while(ans=='y')
+    {
+int r;
+printf("Enter the virtual memory address:");
+scanf("%d",&vm);
+        if(vm>=frame_size*frame_occupied)
+        {
+printf("Invalid address!!!\n");
+        }
+        else
+        {
+            r=vm/frame_size;
+            pm=page_table[r]*frame_size+vm%frame_size;
+printf("Physical Address is %d",pm);
+        }
+printf("\nEnter more(y/n)?");
+fflush(stdin);
+scanf("%c",&ans);
+    }
+    return 0;
+}
+---------------------------- ------------------------------------ -------------------------------------------------- ------------
+12th segementation
+segmentation
+
+#include <stdio.h>
+#include <stdlib.h>
+
+int main()
+{
+    int process_size,memory_size,segment_offset,vm,pm;
+    printf("Enter the size of process:\n");
+    scanf("%d",&process_size);
+    printf("Enter the size of memory:\n");
+    scanf("%d",&memory_size);
+    printf("Enter the location of segment:\n");
+    scanf("%d",&segment_offset);
+    printf("enter virtual memory address:");
+    scanf("%d",&vm);
+    pm=segment_offset+vm;
+    if(pm>memory_size||vm>process_size)
+        printf("Illegal Address");
+    else
+        printf("The physical Address is %d",pm);
+    return 0;
+}
+
+------------------------------------ ------------------ ------------------------ --------------------------- --------------------
+13th disc scheduling
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+void sort(int a[],inttn)
+{
+intarg,j,i;
+    for(i=1;i<tn;i++)
+    {
+        for(j=2;j<=tn;j++)
+        {
+            if(a[j]<a[j-1])
+            {
+arg=a[j];
+                    a[j]=a[j-1];
+                    a[j-1]=arg;
+            }
+        }
+    }
+}
+
+void FCFS(int a[],inttn)
+{
+inttrks=0,i;
+printf("The track order:\n");
+    for(i=1;i<=tn;i++)
+    {
+trks+=abs(a[i]-a[i-1]);
+printf("->%d",a[i]);
+    }
+printf("\nTotal tracks covered:%d",trks);
+}
+
+void SSTN(int a[],inttn)
+{
+inttrks=0,i;
+    sort(a,tn);
+printf("The track order:\n");
+    for(i=1;i<=tn;i++)
+    {
+trks+=abs(a[i]-a[i-1]);
+printf("->%d",a[i]);
+    }
+printf("\nTotal tracks covered:%d",trks);
+}
+
+int main()
+{
+int tracks[20],tn,i;
+printf("enter the current head position:");
+scanf("%d",&tracks[0]);
+printf("enter the no. of tracks:");
+scanf("%d",&tn);
+    for(i=1;i<=tn;i++)
+    {
+scanf("%d",&tracks[i]);
+    }
+    FCFS(tracks,tn);
+    SSTN(tracks,tn);
+    return 0;
+}
+
+------------------ ---------------------- ------------------ -------------------------- -----------------------------
+14th disc scheduling
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+intgetmin(int a[],inttn)
+{
+inti,min=a[1];
+    for(i=1;i<=tn;i++)
+    {
+        if(a[i]<min)
+        {
+            min=a[i];
+        }
+    }
+    return min;
+}
+
+intgetmax(int a[],inttn)
+{
+inti,max=a[1];
+    for(i=1;i<=tn;i++)
+    {
+        if(a[i]>max)
+        {
+            max=a[i];
+        }
+    }
+    return max;
+}
+
+void SCAN(int a[],inttn,inttt)
+{
+    if(a[0]<(tt-a[0]))
+    {
+inttr=getmax(a,tn);
+printf("SCANT\nTneno.of tracks scanned:%d\n",a[0]+tr);
+     return;
+    }
+    else{
+inttr=getmin(a,tn);
+printf("SCANT\nTneno.of tracks scanned:%d\n",(2*tt)-a[0]-tr);
+     return;
+    }
+}
+
+void LOOK(int a[],inttn,inttt)
+{
+int min=getmin(a,tn);
+int max=getmax(a,tn);
+    if(abs(a[0]-min)<abs(a[0]-max))
+    {
+printf("LOOK:\ntotalno.of tracks navigated:%d\n",abs(a[0]-min)+abs(max-min));
+        return;
+    }
+printf("LOOK:\ntotalno.of tracks navigated:%d\n",abs(a[0]-max)+abs(max-min));
+}
+int main()
+{
+int tracks[20],tn,i,tt;
+printf("enter the total no. of tracks:");
+scanf("%d",&tt);
+printf("enter the current head position:");
+scanf("%d",&tracks[0]);
+printf("enter the no. of tracks:");
+scanf("%d",&tn);
+    for(i=1;i<=tn;i++)
+    {
+scanf("%d",&tracks[i]);
+    }
+    SCAN(tracks,tn,tt);
+    LOOK(tracks,tn,tt);
+    return 0;
+}
+
+
